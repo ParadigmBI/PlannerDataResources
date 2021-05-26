@@ -1,8 +1,12 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "logicAppName": {
+    "connections_azuread_externalid": {
+      "defaultValue": "/subscriptions/962ed527-10d6-4b4e-a019-e92e85d06de9/resourceGroups/OzResourceTwo/providers/Microsoft.Web/connections/azuread",
+      "type": "String"
+    },
+    "GetPlanBucketsName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 80,
@@ -10,7 +14,7 @@
         "description": "Name of the Logic App."
       }
     },
-    "logicAppLocation": {
+    "GetPlanBucketsLocation": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "allowedValues": [
@@ -34,30 +38,1031 @@
       "metadata": {
         "description": "Location of the Logic App."
       }
+    },
+    "GetGroupPlansName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetGroupPlansLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "planner_1_Connection_Name": {
+      "type": "string",
+      "defaultValue": "planner"
+    },
+    "planner_1_Connection_DisplayName": {
+      "type": "string",
+      "defaultValue": "mike@mikeallen.com.au"
+    },
+    "planner_1_token:TenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The tenant ID of for the Azure Active Directory application"
+      }
+    },
+    "GetGroupsName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetGroupsLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "azuread_1_Connection_Name": {
+      "type": "string",
+      "defaultValue": "azuread"
+    },
+    "azuread_1_Connection_DisplayName": {
+      "type": "string",
+      "defaultValue": "mike@mikeallen.com.au"
+    },
+    "azuread_1_token:TenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The tenant ID of for the Azure Active Directory application"
+      }
+    },
+    "GetPlanDetailsName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetPlanDetailsLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "GetPlanTasksName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetPlanTasksLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "GetTaskDetailsName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetTaskDetailsLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "GetGroupNameName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetGroupNameLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "GetGroupUsersName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "GetGroupUsersLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
     }
   },
   "variables": {},
   "resources": [
     {
-      "name": "[parameters('logicAppName')]",
+      "name": "[parameters('GetGroupPlansName')]",
       "type": "Microsoft.Logic/workflows",
-      "location": "[parameters('logicAppLocation')]",
-      "tags": {
-        "displayName": "LogicApp"
-      },
+      "location": "[parameters('GetGroupPlansLocation')]",
       "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetGroupPlans"
+      },
       "properties": {
         "definition": {
           "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "List_plans_for_a_group": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['planner']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()?['groupId'])}/planner/plans"
+              },
+              "runAfter": {}
+            },
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('List_plans_for_a_group')"
+              },
+              "runAfter": {
+                "List_plans_for_a_group": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "properties": {
+                    "groupId": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
           "contentVersion": "1.0.0.0",
-          "actions": {},
-          "outputs": {},
-          "parameters": {},
-          "triggers": {}
+          "outputs": {}
         },
-        "parameters": {}
+        "parameters": {
+          "$connections": {
+            "value": {
+              "planner": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupPlansLocation'), '/managedApis/', 'planner')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]",
+                "connectionName": "[parameters('planner_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "MICROSOFT.WEB/CONNECTIONS",
+      "apiVersion": "2018-07-01-preview",
+      "name": "[parameters('planner_1_Connection_Name')]",
+      "location": "[parameters('GetGroupPlansLocation')]",
+      "properties": {
+        "api": {
+          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupPlansLocation'), '/managedApis/', 'planner')]"
+        },
+        "displayName": "[parameters('planner_1_Connection_DisplayName')]",
+        "nonSecretParameterValues": {
+          "token:TenantId": "[parameters('planner_1_token:TenantId')]"
+        }
+      }
+    },
+    {
+      "type": "MICROSOFT.WEB/CONNECTIONS",
+      "apiVersion": "2018-07-01-preview",
+      "name": "[parameters('azuread_1_Connection_Name')]",
+      "location": "[parameters('GetGroupsLocation')]",
+      "properties": {
+        "api": {
+          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupsLocation'), '/managedApis/', 'azuread')]"
+        },
+        "displayName": "[parameters('azuread_1_Connection_DisplayName')]",
+        "nonSecretParameterValues": {
+          "token:TenantId": "[parameters('azuread_1_token:TenantId')]"
+        }
+      }
+    },
+    {
+      "name": "[parameters('GetPlanBucketsName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('GetPlanBucketsLocation')]",
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetPlanBuckets"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "List_buckets": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['planner']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()?['planId'])}/buckets",
+                "queries": {
+                  "groupId": "@triggerBody()?['groupId']"
+                }
+              },
+              "runAfter": {}
+            },
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('List_buckets')"
+              },
+              "runAfter": {
+                "List_buckets": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "properties": {
+                    "groupId": {
+                      "type": "string"
+                    },
+                    "planId": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "planner": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetPlanBuckets2Location'), '/managedApis/', 'planner')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]",
+                "connectionName": "[parameters('planner_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[parameters('GetPlanDetailsName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('GetPlanDetailsLocation')]",
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetPlanDetails"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('Get_plan_details')"
+              },
+              "runAfter": {
+                "Get_plan_details": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Get_plan_details": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['planner']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v1.0/planner/plans/@{encodeURIComponent(triggerBody()?['planId'])}/details"
+              },
+              "runAfter": {}
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "properties": {
+                    "planId": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "planner": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetPlanDetailsLocation'), '/managedApis/', 'planner')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]",
+                "connectionName": "[parameters('planner_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[parameters('GetPlanTasksName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('GetPlanTasksLocation')]",
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetPlanTasks"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "List_tasks": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['planner']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()?['planId'])}/tasks",
+                "queries": {
+                  "groupId": "@triggerBody()?['groupId']"
+                }
+              },
+              "runAfter": {}
+            },
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('List_tasks')"
+              },
+              "runAfter": {
+                "List_tasks": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "properties": {
+                    "groupId": {
+                      "type": "string"
+                    },
+                    "planId": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "planner": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetPlanTasksLocation'), '/managedApis/', 'planner')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]",
+                "connectionName": "[parameters('planner_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[parameters('GetTaskDetailsName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('GetTaskDetailsLocation')]",
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetTaskDetails"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "Get_task_details": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['planner']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v1.0/planner/tasks/@{encodeURIComponent(triggerBody()?['taskId'])}/details"
+              },
+              "runAfter": {}
+            },
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('Get_task_details')"
+              },
+              "runAfter": {
+                "Get_task_details": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "properties": {
+                    "taskId": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "planner": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetTaskDetailsLocation'), '/managedApis/', 'planner')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]",
+                "connectionName": "[parameters('planner_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[parameters('GetGroupNameName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('GetGroupNameLocation')]",
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('azuread_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetGroupName"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "Get_group": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azuread']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()?['groupId'])}"
+              },
+              "runAfter": {}
+            },
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('Get_group')"
+              },
+              "runAfter": {
+                "Get_group": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azuread": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupNameLocation'), '/managedApis/', 'azuread')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('azuread_1_Connection_Name'))]",
+                "connectionName": "[parameters('azuread_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[parameters('GetGroupUsersName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('GetGroupUsersLocation')]",
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('azuread_1_Connection_Name'))]"
+      ],
+      "tags": {
+        "displayName": "GetGroupUsers"
+      },
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "Get_group_members": {
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azuread']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()?['groupId'])}/members"
+              },
+              "runAfter": {}
+            },
+            "Response": {
+              "type": "Response",
+              "kind": "http",
+              "inputs": {
+                "statusCode": 200,
+                "body": "@body('Get_group_members')"
+              },
+              "runAfter": {
+                "Get_group_members": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azuread": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupUsersLocation'), '/managedApis/', 'azuread')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('azuread_1_Connection_Name'))]",
+                "connectionName": "[parameters('azuread_1_Connection_Name')]"
+              }
+            }
+          }
+        }
       }
     }
-  ],
-  "outputs": {}
+  ]
 }
