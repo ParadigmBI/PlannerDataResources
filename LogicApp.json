@@ -2,12 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "connections_azuread_externalid": {
-      "defaultValue": "/subscriptions/962ed527-10d6-4b4e-a019-e92e85d06de9/resourceGroups/OzResourceTwo/providers/Microsoft.Web/connections/azuread",
-      "type": "String"
-    },
     "GetPlanBucketsName": {
       "type": "string",
+      "defaultValue": "GetPlanBuckets",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -41,6 +38,7 @@
     },
     "GetGroupPlansName": {
       "type": "string",
+      "defaultValue": "GetGroupPlans",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -105,16 +103,9 @@
     },
     "planner_1_token:TenantId": {
       "type": "string",
+      "defaultValue": "subscription().tenantId",
       "metadata": {
         "description": "The tenant ID of for the Azure Active Directory application"
-      }
-    },
-    "GetGroupsName": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 80,
-      "metadata": {
-        "description": "Name of the Logic App."
       }
     },
     "GetGroupsLocation": {
@@ -175,12 +166,14 @@
     },
     "azuread_1_token:TenantId": {
       "type": "string",
+      "defaultValue": "subscription().tenantId",
       "metadata": {
         "description": "The tenant ID of for the Azure Active Directory application"
       }
     },
     "GetPlanDetailsName": {
       "type": "string",
+      "defaultValue": "GetPlanDetails",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -237,6 +230,7 @@
     },
     "GetPlanTasksName": {
       "type": "string",
+      "defaultValue": "GetPlanTasks",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -293,6 +287,7 @@
     },
     "GetTaskDetailsName": {
       "type": "string",
+      "defaultValue": "GetTaskDetail",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -349,6 +344,7 @@
     },
     "GetGroupNameName": {
       "type": "string",
+      "defaultValue": "GetGroupName",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -405,6 +401,7 @@
     },
     "GetGroupUsersName": {
       "type": "string",
+      "defaultValue": "GetGroupUsers",
       "minLength": 1,
       "maxLength": 80,
       "metadata": {
@@ -649,7 +646,7 @@
           "$connections": {
             "value": {
               "planner": {
-                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetPlanBuckets2Location'), '/managedApis/', 'planner')]",
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetPlanBucketsLocation'), '/managedApis/', 'planner')]",
                 "connectionId": "[resourceId('Microsoft.Web/connections', parameters('planner_1_Connection_Name'))]",
                 "connectionName": "[parameters('planner_1_Connection_Name')]"
               }
