@@ -16,21 +16,44 @@
       "defaultValue": "[resourceGroup().location]",
       "allowedValues": [
         "[resourceGroup().location]",
-        "australiaeast",
-        "australiasoutheast",
-        "brazilsouth",
-        "centralus",
         "eastasia",
+        "southeastasia",
+        "centralus",
         "eastus",
         "eastus2",
-        "japaneast",
-        "japanwest",
+        "westus",
         "northcentralus",
-        "northeurope",
         "southcentralus",
-        "southeastasia",
+        "northeurope",
         "westeurope",
-        "westus"
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2",
+        "koreacentral",
+        "koreasouth",
+        "francecentral",
+        "francesouth",
+        "uaecentral",
+        "uaenorth",
+        "southafricanorth",
+        "southafricawest",
+        "switzerlandnorth",
+        "switzerlandwest",
+        "germanynorth",
+        "germanywestcentral",
+        "norwayeast",
+        "brazilsoutheast"
       ],
       "metadata": {
         "description": "Location of the Logic App."
@@ -435,7 +458,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()?['groupId'])}/planner/plans"
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()['queries']['groupId'])}/planner/plans"
               },
               "runAfter": {}
             },
@@ -464,14 +487,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "properties": {
-                    "groupId": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
@@ -545,9 +562,9 @@
                   }
                 },
                 "method": "get",
-                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()?['planId'])}/buckets",
+                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()['queries']['planId'])}/buckets",
                 "queries": {
-                  "groupId": "@triggerBody()?['groupId']"
+                  "groupId": "@{triggerBody()['queries']['groupId']}"
                 }
               },
               "runAfter": {}
@@ -577,17 +594,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "properties": {
-                    "groupId": {
-                      "type": "string"
-                    },
-                    "planId": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
@@ -644,7 +652,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/planner/plans/@{encodeURIComponent(triggerBody()?['planId'])}/details"
+                "path": "/v1.0/planner/plans/@{encodeURIComponent(triggerBody()['queries']['planId'])}/details"
               },
               "runAfter": {}
             }
@@ -660,14 +668,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "properties": {
-                    "planId": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
@@ -711,9 +713,9 @@
                   }
                 },
                 "method": "get",
-                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()?['planId'])}/tasks",
+                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()['queries']['planId'])}/tasks",
                 "queries": {
-                  "groupId": "@triggerBody()?['groupId']"
+                  "groupId": "@{triggerBody()['queries']['groupId']}"
                 }
               },
               "runAfter": {}
@@ -743,17 +745,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "properties": {
-                    "groupId": {
-                      "type": "string"
-                    },
-                    "planId": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
@@ -797,7 +790,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/planner/tasks/@{encodeURIComponent(triggerBody()?['taskId'])}/details"
+                "path": "/v1.0/planner/tasks/@{encodeURIComponent(triggerBody()['queries']['taskId'])}/details"
               },
               "runAfter": {}
             },
@@ -826,14 +819,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "properties": {
-                    "taskId": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
@@ -877,7 +864,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()?['groupId'])}"
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()['queries']['groupId'])}"
               },
               "runAfter": {}
             },
@@ -906,14 +893,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string"
-                    }
-                  }
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
@@ -957,7 +938,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()?['groupId'])}/members"
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()['queries']['groupId'])}/members"
               },
               "runAfter": {}
             },
@@ -986,14 +967,8 @@
               "type": "Request",
               "kind": "Http",
               "inputs": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string"
-                    }
-                  }
-                }
+                "schema": {},
+                "method": "GET"
               }
             }
           },
