@@ -510,10 +510,10 @@
       "type": "MICROSOFT.WEB/CONNECTIONS",
       "apiVersion": "2018-07-01-preview",
       "name": "[parameters('azuread_1_Connection_Name')]",
-      "location": "[parameters('GetGroupsLocation')]",
+      "location": "[parameters('GetGroupNameLocation')]",
       "properties": {
         "api": {
-          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupsLocation'), '/managedApis/', 'azuread')]"
+          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('GetGroupNameLocation'), '/managedApis/', 'azuread')]"
         },
         "displayName": "[parameters('azuread_1_Connection_DisplayName')]",
         "nonSecretParameterValues": {
