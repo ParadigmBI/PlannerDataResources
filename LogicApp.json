@@ -458,7 +458,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()['queries']['groupId'])}/planner/plans"
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerOutputs()['queries']['groupId'])}/planner/plans"
               },
               "runAfter": {}
             },
@@ -562,9 +562,9 @@
                   }
                 },
                 "method": "get",
-                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()['queries']['planId'])}/buckets",
+                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerOutputs()['queries']['planId'])}/buckets",
                 "queries": {
-                  "groupId": "@{triggerBody()['queries']['groupId']}"
+                  "groupId": "@{triggerOutputs()['queries']['groupId']}"
                 }
               },
               "runAfter": {}
@@ -652,7 +652,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/planner/plans/@{encodeURIComponent(triggerBody()['queries']['planId'])}/details"
+                "path": "/v1.0/planner/plans/@{encodeURIComponent(triggerOutputs()['queries']['planId'])}/details"
               },
               "runAfter": {}
             }
@@ -713,9 +713,9 @@
                   }
                 },
                 "method": "get",
-                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerBody()['queries']['planId'])}/tasks",
+                "path": "/v2/v1.0/planner/plans/@{encodeURIComponent(triggerOutputs()['queries']['planId'])}/tasks",
                 "queries": {
-                  "groupId": "@{triggerBody()['queries']['groupId']}"
+                  "groupId": "@{triggerOutputs()['queries']['groupId']}"
                 }
               },
               "runAfter": {}
@@ -790,7 +790,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/planner/tasks/@{encodeURIComponent(triggerBody()['queries']['taskId'])}/details"
+                "path": "/v1.0/planner/tasks/@{encodeURIComponent(triggerOutputs()['queries']['taskId'])}/details"
               },
               "runAfter": {}
             },
@@ -864,7 +864,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()['queries']['groupId'])}"
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerOutputs()['queries']['groupId'])}"
               },
               "runAfter": {}
             },
@@ -938,7 +938,7 @@
                   }
                 },
                 "method": "get",
-                "path": "/v1.0/groups/@{encodeURIComponent(triggerBody()['queries']['groupId'])}/members"
+                "path": "/v1.0/groups/@{encodeURIComponent(triggerOutputs()['queries']['groupId'])}/members"
               },
               "runAfter": {}
             },
