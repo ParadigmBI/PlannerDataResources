@@ -122,7 +122,7 @@
     },
     "planner_1_Connection_DisplayName": {
       "type": "string",
-      "defaultValue": "mike@mikeallen.com.au"
+      "defaultValue": "Planner Connection"
     },
     "planner_1_token:TenantId": {
       "type": "string",
@@ -137,7 +137,7 @@
     },
     "azuread_1_Connection_DisplayName": {
       "type": "string",
-      "defaultValue": "mike@mikeallen.com.au"
+      "defaultValue": "Active Directory Read"
     },
     "azuread_1_token:TenantId": {
       "type": "string",
