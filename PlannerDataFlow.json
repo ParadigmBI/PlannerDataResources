@@ -1,0 +1,366 @@
+{
+  "name": "PlannerFlow",
+  "description": "",
+  "version": "1.0",
+  "culture": "en-AU",
+  "modifiedTime": "2021-06-08T05:25:12.8875152+00:00",
+  "pbi:mashup": {
+    "fastCombine": false,
+    "allowNativeQueries": false,
+    "queriesMetadata": {
+      "fxCallPlannerApi": {
+        "queryId": "d45bee79-e895-4e91-9d6b-80f3d48b01fd",
+        "queryName": "fxCallPlannerApi"
+      },
+      "pApiKey": {
+        "queryId": "14addf6d-78c7-4f1b-8cd8-6bafd3a613b7",
+        "queryName": "pApiKey"
+      },
+      "pGroupId": {
+        "queryId": "a8096513-3435-4c90-a258-1f753f4cd639",
+        "queryName": "pGroupId"
+      },
+      "GroupName": {
+        "queryId": "cc0e367e-208f-4a4b-acf1-4c4b5fa335b5",
+        "queryName": "GroupName",
+        "loadEnabled": true
+      },
+      "GroupPlan": {
+        "queryId": "1fa7fca3-a18b-455f-9a39-c21fa39c6e70",
+        "queryName": "GroupPlan",
+        "loadEnabled": true
+      },
+      "fxPlanBuckets": {
+        "queryId": "56853ef2-13dd-4a60-b03e-60facb1b51af",
+        "queryName": "fxPlanBuckets"
+      },
+      "Bucket": {
+        "queryId": "48472778-c845-4ade-80af-538771168b1d",
+        "queryName": "Bucket",
+        "loadEnabled": true
+      },
+      "fxPlanTasks": {
+        "queryId": "cf17651f-fadc-461f-a5cf-7c0416ccfc88",
+        "queryName": "fxPlanTasks"
+      },
+      "PlanTasks": {
+        "queryId": "79af201c-0b26-4c99-ac98-2b1f3ad0d011",
+        "queryName": "PlanTasks",
+        "loadEnabled": true
+      },
+      "Calendar": {
+        "queryId": "d830ff6a-86d0-4d90-982e-1f9c54ab7c59",
+        "queryName": "Calendar",
+        "loadEnabled": true
+      },
+      "fxPreviousDate": {
+        "queryId": "05f11bb0-abca-486a-b299-8095d995e34b",
+        "queryName": "fxPreviousDate"
+      },
+      "Categories": {
+        "queryId": "42534220-178f-426c-a8d8-1818338278e8",
+        "queryName": "Categories"
+      },
+      "fxPlanCategories": {
+        "queryId": "2ef8c8a4-8150-49bb-990f-5334c29f7dcf",
+        "queryName": "fxPlanCategories"
+      },
+      "Category": {
+        "queryId": "69460e07-2657-4425-a307-019301a26df7",
+        "queryName": "Category",
+        "loadEnabled": true
+      },
+      "Progress": {
+        "queryId": "bcac87be-a3a9-43dc-a252-9b87c47df560",
+        "queryName": "Progress",
+        "loadEnabled": true
+      },
+      "fxTaskDetailRecord": {
+        "queryId": "acd4f83a-567d-4e43-b189-7872d63add0d",
+        "queryName": "fxTaskDetailRecord"
+      },
+      "TaskCheckList": {
+        "queryId": "1e163c16-4548-42cc-a680-829e726f9387",
+        "queryName": "TaskCheckList",
+        "loadEnabled": true
+      },
+      "Users": {
+        "queryId": "22d431d6-6a1f-4435-8034-a9a55b307847",
+        "queryName": "Users",
+        "loadEnabled": true
+      }
+    },
+    "document": "section Section1;\r\nshared fxCallPlannerApi = let\r\n  Source = (pQuery as record, pPath as text) => let\n        query = Record.AddField(pQuery,\"subscription-key\",pApiKey),\n        Content = Web.Contents(\"YourPlannerApiUrl\",        \n             [Headers=[#\"Content-Type\"=\"application/json\"],\n             RelativePath=pPath,\n             Query = query]\n             )\n    in\n        Content\r\nin\r\n  Source;\r\nshared pApiKey = let\r\n  pApiKey = \"YourAPIKey\" meta [IsParameterQuery = true, IsParameterQueryRequired = true, Type = type any]\r\nin\r\n  pApiKey;\r\nshared pGroupId = let\r\n  pGroupId = \"GroupIdForReporting\" meta [IsParameterQuery = true, IsParameterQueryRequired = true, Type = type any]\r\nin\r\n  pGroupId;\r\nshared GroupName = let\r\n  RelativePath = \"/getgroupname/manual/paths/invoke\",\r\n  Query = [groupId=pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query, RelativePath)),\r\n  thisTable = Table.FromRecords({Source}),\r\n  #\"Removed Other Columns\" = Table.SelectColumns(thisTable, {\"id\", \"displayName\"}),\r\n  #\"Renamed Columns\" = Table.RenameColumns(#\"Removed Other Columns\", {{\"id\", \"groupId\"}, {\"displayName\", \"groupName\"}}),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"groupId\", type text}, {\"groupName\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"groupId\", null}, {\"groupName\", null}})\r\nin\r\n  #\"Replace errors\";\r\nshared GroupPlan = let\r\n  RelativePath = \"/getgroupplans/manual/paths/invoke\",\r\n  Query = [ groupId = pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\r\n  value = Source[value],\r\n  #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\r\n  #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"title\", \"id\"}, {\"planName\", \"planId\"}),\r\n  #\"Added Custom\" = Table.AddColumn(#\"Expanded Column1\", \"groupId\", each pGroupId),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Added Custom\", {{\"planName\", type text}, {\"planId\", type text}, {\"groupId\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"planName\", null}, {\"planId\", null}, {\"groupId\", null}})\r\nin\r\n  #\"Replace errors\";\r\nshared fxPlanBuckets = let\r\n  Query = (pPlanId as text) => let\n        RelativePath=\"/getplanbuckets/manual/paths/invoke\",\n        Query = [groupId=pGroupId,planId=pPlanId],\n        Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\n        value = Source[value],\n        #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\n        #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"name\", \"planId\", \"id\"}, {\"bucketName\", \"planId\", \"bucketId\"})\n    in\n        #\"Expanded Column1\"\r\nin\r\n  Query;\r\nshared Bucket = let\r\n  RelativePath = \"/getgroupplans/manual/paths/invoke\",\r\n  Query = [ groupId=pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\r\n  value = Source[value],\r\n  #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\r\n  #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"title\", \"id\"}, {\"planName\", \"planId\"}),\r\n  #\"Added Custom\" = Table.AddColumn(#\"Expanded Column1\", \"groupId\", each pGroupId),\r\n  #\"Invoked Custom Function\" = Table.AddColumn(#\"Added Custom\", \"Bucket\", each fxPlanBuckets([planId])),\r\n  #\"Expanded Bucket\" = Table.ExpandTableColumn(#\"Invoked Custom Function\", \"Bucket\", {\"bucketName\", \"bucketId\"}, {\"bucketName\", \"bucketId\"}),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Expanded Bucket\", {{\"planName\", type text}, {\"planId\", type text}, {\"groupId\", type text}, {\"bucketName\", type text}, {\"bucketId\", type text}}),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Transform columns\", {\"planName\", \"groupId\"}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Removed columns\", {{\"planId\", null}, {\"bucketName\", null}, {\"bucketId\", null}})\r\nin\r\n  #\"Replace errors\";\r\nshared fxPlanTasks = let\r\n  Query = (pPlanId as text, pGroupId as text) => let\n    RelativePath=\"/getplantasks/manual/paths/invoke\",\n    Query = [groupId=pGroupId,planId=pPlanId],\n    Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\n    value = Source[value],\n    #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\n    #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"bucketId\", \"title\", \"assigneePriority\", \"percentComplete\", \"startDateTime\", \"createdDateTime\", \"dueDateTime\", \"completedDateTime\", \"completedBy\", \"checklistItemCount\", \"activeChecklistItemCount\", \"id\", \"appliedCategories\", \"assignments\"}, {\"bucketId\", \"taskName\", \"assigneePriority\", \"percentComplete\", \"startDateTime\", \"createdDateTime\", \"dueDateTime\", \"completedDateTime\", \"completedBy\", \"checklistItemCount\", \"activeChecklistItemCount\", \"taskId\", \"appliedCategories\", \"assignments\"})\nin\n    #\"Expanded Column1\"\r\nin\r\n  Query;\r\nshared PlanTasks = let\r\n  RelativePath = \"/getgroupplans/manual/paths/invoke\",\r\n  Query = [ groupId = pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\r\n  value = Source[value],\r\n  #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\r\n  #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"id\"}, {\"Column1.id\"}),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Expanded Column1\", {{\"Column1.id\", \"planId\"}}),\r\n  #\"Invoked custom function\" = Table.AddColumn(#\"Renamed columns\", \"Tasks\", each fxPlanTasks([planId], pGroupId)),\r\n  #\"Expanded Tasks\" = Table.ExpandTableColumn(#\"Invoked custom function\", \"Tasks\", {\"bucketId\", \"taskName\", \"assigneePriority\", \"percentComplete\", \"startDateTime\", \"dueDateTime\", \"checklistItemCount\", \"taskId\", \"appliedCategories\", \"assignments\"}, {\"bucketId\", \"taskName\", \"assigneePriority\", \"percentComplete\", \"startDateTime\", \"dueDateTime\", \"checklistItemCount\", \"taskId\", \"appliedCategories\", \"assignments\"}),\r\n  #\"Changed Type\" = Table.TransformColumnTypes(#\"Expanded Tasks\", {{\"dueDateTime\", type datetime}}),\r\n  #\"Added DueDate\" = Table.AddColumn(#\"Changed Type\", \"dueDate\", each if [dueDateTime] = null then DateTime.Date(DateTime.LocalNow()) else DateTime.Date([dueDateTime])),\r\n  #\"Changed Type1\" = Table.TransformColumnTypes(#\"Added DueDate\", {{\"startDateTime\", type datetime}}),\r\n  #\"Added Conditional Column\" = Table.AddColumn(#\"Changed Type1\", \"startDate\", each if [startDateTime] = null then fxPreviousDate([dueDate]) else DateTime.Date([startDateTime])),\r\n  #\"Changed Type2\" = Table.TransformColumnTypes(#\"Added Conditional Column\", {{\"dueDate\", type date}, {\"startDate\", type date}}),\r\n  #\"Added Custom\" = Table.AddColumn(#\"Changed Type2\", \"userId\", each Record.FieldNames([assignments])),\r\n  #\"Removed Columns\" = Table.RemoveColumns(#\"Added Custom\", {\"startDateTime\", \"dueDateTime\", \"assignments\"}),\r\n  #\"Extracted userId\" = Table.TransformColumns(#\"Removed Columns\", {\"userId\",List.First}),\r\n  #\"Added Custom1\" = Table.AddColumn(#\"Extracted userId\", \"categoryList\", each Record.FieldNames([appliedCategories])),\r\n  #\"Added Custom2\" = Table.AddColumn(#\"Added Custom1\", \"Category\", each if List.IsEmpty([categoryList]) then \"\" else [categoryList]{0}),\r\n  #\"Merged Columns\" = Table.CombineColumns(#\"Added Custom2\", {\"planId\", \"Category\"}, Combiner.CombineTextByDelimiter(\"\", QuoteStyle.None), \"planCategory\"),\r\n  #\"Removed Columns1\" = Table.RemoveColumns(#\"Merged Columns\", {\"appliedCategories\", \"categoryList\"}),\r\n  #\"Invoked custom function 1\" = Table.AddColumn(#\"Removed Columns1\", \"Invoked custom function\", each fxTaskDetailRecord([taskId])),\r\n  #\"Expanded Invoked custom function\" = Table.ExpandRecordColumn(#\"Invoked custom function 1\", \"Invoked custom function\", {\"description\"}, {\"taskDescription\"}),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Expanded Invoked custom function\", {{\"bucketId\", type text}, {\"taskName\", type text}, {\"assigneePriority\", type text}, {\"percentComplete\", type text}, {\"checklistItemCount\", type text}, {\"taskId\", type text}, {\"userId\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"bucketId\", null}, {\"taskName\", null}, {\"assigneePriority\", null}, {\"percentComplete\", null}, {\"checklistItemCount\", null}, {\"taskId\", null}, {\"userId\", null}}),\r\n  #\"Transform columns 1\" = Table.TransformColumnTypes(#\"Replace errors\", {{\"taskDescription\", type text}}),\r\n  #\"Replace errors 1\" = Table.ReplaceErrorValues(#\"Transform columns 1\", {{\"taskDescription\", null}})\r\nin\r\n  #\"Replace errors 1\";\r\nshared Calendar = let\r\n  StartDate = Date.FromText(\"2021-01-01\"),\r\n  EndDate = Date.FromText(\"2021-12-31\"),\r\n  Count = Duration.Days(EndDate-StartDate)+1,\r\n  CalendarList = List.Dates(StartDate,Count,#duration(1, 0, 0, 0)),\r\n  CalendarColumn = Table.FromRecords({[Date = CalendarList]}),\r\n  Calendar = Table.ExpandListColumn(CalendarColumn, \"Date\"),\r\n  #\"Added Custom\" = Table.AddColumn(Calendar, \"Month\", each Text.Range(Date.MonthName([Date]), 0, 3)),\r\n  #\"Added Conditional Column\" = Table.AddColumn(#\"Added Custom\", \"IsWorkingDay\", each if Date.DayOfWeek([Date]) = 5 then 0 else if Date.DayOfWeek([Date]) = 6 then 0 else 1),\r\n  #\"Changed Type\" = Table.TransformColumnTypes(#\"Added Conditional Column\", {{\"IsWorkingDay\", type logical}, {\"Date\", type date}}),\r\n  #\"Added Custom1\" = Table.AddColumn(#\"Changed Type\", \"WeekOfYear\", each Date.WeekOfYear([Date])),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Added Custom1\", {{\"Month\", type text}, {\"WeekOfYear\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"Month\", null}, {\"WeekOfYear\", null}}),\r\n  #\"Added custom\" = Table.AddColumn(#\"Replace errors\", \"Year\", each Date.Year([Date])),\r\n  #\"Added custom 1\" = Table.AddColumn(#\"Added custom\", \"MonthNumb\", each Date.Month([Date])),\r\n  #\"Transform columns 1\" = Table.TransformColumnTypes(#\"Added custom 1\", {{\"Year\", type text}, {\"MonthNumb\", type text}}),\r\n  #\"Replace errors 1\" = Table.ReplaceErrorValues(#\"Transform columns 1\", {{\"Year\", null}, {\"MonthNumb\", null}})\r\nin\r\n  #\"Replace errors 1\";\r\nshared fxPreviousDate = let\r\n  Query = (pdate as date) as date =>\n    let\n        fxDate = (qdate as date) as date => \n          let \n          xdate = Date.AddDays(qdate,-1),\n          ydate = if Date.DayOfWeek(xdate) = 6 then @fxDate(xdate) else \n                        if Date.DayOfWeek(xdate) = 5 then @fxDate(xdate) else xdate\n       in\n          ydate,\n        zdate = fxDate(pdate) \n    in      \n    zdate\r\nin\r\n  Query;\r\nshared Categories = let\r\n  Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WSk4sSU3PL6o0VNJRCsjMy1aK1UEIGgEFg1JTUMSMgWKRqTk5+eUowiZAYfei1NQ8FFFToKhTTmkqiqAZyKrSooIcoHAsAA==\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Category = _t, Color = _t])\r\nin\r\n  Source;\r\nshared fxPlanCategories = let\r\n  fxPlanCategories = (pPlanId as text) => let\n    Query = [ planId = pPlanId],\n    RelativePath=\"/getplandetails/manual/paths/invoke\",\n    Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\n    categoryDescriptions = Source[categoryDescriptions],\n    #\"Converted to Table\" = Record.ToTable(categoryDescriptions)\nin \n    #\"Converted to Table\"\r\nin\r\n  fxPlanCategories;\r\nshared Category = let\r\n  RelativePath = \"/getgroupplans/manual/paths/invoke\",\r\n  Query = [ groupId = pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\r\n  value = Source[value],\r\n  #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\r\n  #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"id\"}, {\"planId\"}),\r\n  #\"Invoked Custom Function\" = Table.AddColumn(#\"Expanded Column1\", \"Category\", each fxPlanCategories([planId])),\r\n  #\"Expanded Category\" = Table.ExpandTableColumn(#\"Invoked Custom Function\", \"Category\", {\"Name\", \"Value\"}, {\"Name\", \"Value\"}),\r\n  #\"Merged Queries\" = Table.NestedJoin(#\"Expanded Category\", {\"Name\"}, Categories, {\"Category\"}, \"Categories\", JoinKind.LeftOuter),\r\n  #\"Expanded Categories\" = Table.ExpandTableColumn(#\"Merged Queries\", \"Categories\", {\"Color\"}, {\"Color\"}),\r\n  #\"Added Conditional Column\" = Table.AddColumn(#\"Expanded Categories\", \"Custom\", each if [Value] = null then [Color] else [Value]),\r\n  #\"Removed Columns1\" = Table.RemoveColumns(#\"Added Conditional Column\", {\"Value\", \"Color\"}),\r\n  #\"Renamed Columns\" = Table.RenameColumns(#\"Removed Columns1\", {{\"Custom\", \"category\"}}),\r\n  #\"Merged Columns\" = Table.CombineColumns(#\"Renamed Columns\", {\"planId\", \"Name\"}, Combiner.CombineTextByDelimiter(\"\", QuoteStyle.None), \"planCategory\"),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Merged Columns\", {{\"category\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"category\", null}})\r\nin\r\n  #\"Replace errors\";\r\nshared Progress = let\r\n  Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WMlDSUfLLL1EILkksKklNAfIMlWJ1opVMQRKeeQoBRfnpRanFxUCeEVjC0AAk45yfW5CTCtFgrBQbCwA=\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [percentComplete = _t, status = _t, order = _t])\r\nin\r\n  Source;\r\nshared fxTaskDetailRecord = let\r\n  Source = (pTaskId as any) => let\n    RelativePath=\"/gettaskdetail/manual/paths/invoke\",\n    Query = [taskId = pTaskId],\n    Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\n    checklist = Source[checklist],\n    #\"Converted to Table\" = Table.FromList(checklist, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\n    ExpandedTable = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"id\", \"value\"}, {\"id\", \"value\"}),\n    #\"Expanded value\" = Table.ExpandRecordColumn(ExpandedTable, \"value\", {\"isChecked\", \"title\", \"orderHint\"}, {\"isChecked\", \"title\", \"orderHint\"}),\n    #\"Sorted Rows\" = Table.Sort(#\"Expanded value\",{{\"orderHint\", Order.Descending}}),\n    #\"Added Index\" = Table.AddIndexColumn(#\"Sorted Rows\", \"Index\", 1, 1, Int64.Type),\n    #\"Added Custom\" = Table.AddColumn(#\"Added Index\", \"value\", each [id = [id],isChecked = [isChecked], title = [title], orderHint = [orderHint], index = [Index]]),\n    #\"Removed Columns\" = Table.RemoveColumns(#\"Added Custom\",{\"isChecked\", \"title\", \"orderHint\", \"Index\"}),\n    #\"Added Custom1\" = Table.AddColumn(#\"Removed Columns\", \"Item\", each [id = [id], value = [value]]),\n    thislist = #\"Added Custom1\"[Item],\n    Detail = [description=Source[description], checkList=thislist]\nin\n    Detail\r\nin\r\n  Source;\r\nshared TaskCheckList = let\r\n  RelativePath = \"/getgroupplans/manual/paths/invoke\",\r\n  Query = [ groupId = pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\r\n  value = Source[value],\r\n  #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\r\n  #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"id\"}, {\"planId\"}),\r\n  #\"Invoked Custom Function1\" = Table.AddColumn(#\"Expanded Column1\", \"Tasks\", each fxPlanTasks([planId], pGroupId)),\r\n  #\"Expanded Tasks\" = Table.ExpandTableColumn(#\"Invoked Custom Function1\", \"Tasks\", {\"checklistItemCount\", \"taskId\"}, {\"checklistItemCount\", \"taskId\"}),\r\n  #\"Invoked Custom Function\" = Table.AddColumn(#\"Expanded Tasks\", \"TaskDetail\", each fxTaskDetailRecord([taskId])),\r\n  #\"Added Custom\" = Table.AddColumn(#\"Invoked Custom Function\", \"Custom\", each try [TaskDetail][checkList] otherwise {[id = 0]}),\r\n  #\"Expanded Custom\" = Table.ExpandListColumn(#\"Added Custom\", \"Custom\"),\r\n  #\"Expanded Custom1\" = Table.ExpandRecordColumn(#\"Expanded Custom\", \"Custom\", {\"value\"}, {\"Custom.value\"}),\r\n  UnsortedCheckList = Table.ExpandRecordColumn(#\"Expanded Custom1\", \"Custom.value\", {\"id\", \"isChecked\", \"title\", \"orderHint\", \"index\"}, {\"id\", \"isChecked\", \"title\", \"orderHint\", \"index\"}),\r\n  SortedCheckList = Table.Sort(UnsortedCheckList, {{\"taskId\", Order.Ascending}, {\"orderHint\", Order.Descending}}),\r\n  #\"Changed Type\" = Table.TransformColumnTypes(SortedCheckList, {{\"isChecked\", type logical}, {\"checklistItemCount\", Int64.Type}}),\r\n  #\"Removed Columns\" = Table.RemoveColumns(#\"Changed Type\", {\"TaskDetail\", \"id\", \"orderHint\", \"planId\"}),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Removed Columns\", {{\"taskId\", type text}, {\"title\", type text}, {\"index\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"taskId\", null}, {\"title\", null}, {\"index\", null}})\r\nin\r\n  #\"Replace errors\";\r\nshared Users = let\r\n  RelativePath = \"/getgroupusers/manual/paths/invoke\",\r\n  Query = [ groupId = pGroupId],\r\n  Source = Json.Document(fxCallPlannerApi(Query,RelativePath)),\r\n  value = Source[value],\r\n  #\"Converted to Table\" = Table.FromList(value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),\r\n  #\"Expanded Column1\" = Table.ExpandRecordColumn(#\"Converted to Table\", \"Column1\", {\"id\", \"displayName\", \"givenName\", \"mail\", \"surname\", \"userPrincipalName\"}, {\"id\", \"displayName\", \"givenName\", \"mail\", \"surname\", \"userPrincipalName\"}),\r\n  #\"Renamed Columns\" = Table.RenameColumns(#\"Expanded Column1\", {{\"id\", \"userId\"}}),\r\n  #\"Transform columns\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"userId\", type text}, {\"displayName\", type text}, {\"givenName\", type text}, {\"mail\", type text}, {\"surname\", type text}, {\"userPrincipalName\", type text}}),\r\n  #\"Replace errors\" = Table.ReplaceErrorValues(#\"Transform columns\", {{\"userId\", null}, {\"displayName\", null}, {\"givenName\", null}, {\"mail\", null}, {\"surname\", null}, {\"userPrincipalName\", null}})\r\nin\r\n  #\"Replace errors\";\r\n"
+  },
+  "annotations": [
+    {
+      "name": "pbi:QueryGroups",
+      "value": "[]"
+    }
+  ],
+  "entities": [
+    {
+      "$type": "LocalEntity",
+      "name": "GroupName",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "GroupName.csv"
+      },
+      "attributes": [
+        {
+          "name": "groupId",
+          "dataType": "string"
+        },
+        {
+          "name": "groupName",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "GroupPlan",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "GroupPlan.csv"
+      },
+      "attributes": [
+        {
+          "name": "planName",
+          "dataType": "string"
+        },
+        {
+          "name": "planId",
+          "dataType": "string"
+        },
+        {
+          "name": "groupId",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "Bucket",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "Bucket.csv"
+      },
+      "attributes": [
+        {
+          "name": "planId",
+          "dataType": "string"
+        },
+        {
+          "name": "bucketName",
+          "dataType": "string"
+        },
+        {
+          "name": "bucketId",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "PlanTasks",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "PlanTasks.csv"
+      },
+      "attributes": [
+        {
+          "name": "bucketId",
+          "dataType": "string"
+        },
+        {
+          "name": "taskName",
+          "dataType": "string"
+        },
+        {
+          "name": "assigneePriority",
+          "dataType": "string"
+        },
+        {
+          "name": "percentComplete",
+          "dataType": "string"
+        },
+        {
+          "name": "checklistItemCount",
+          "dataType": "string"
+        },
+        {
+          "name": "taskId",
+          "dataType": "string"
+        },
+        {
+          "name": "dueDate",
+          "dataType": "date"
+        },
+        {
+          "name": "startDate",
+          "dataType": "date"
+        },
+        {
+          "name": "userId",
+          "dataType": "string"
+        },
+        {
+          "name": "planCategory",
+          "dataType": "string"
+        },
+        {
+          "name": "taskDescription",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "Calendar",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "Calendar.csv"
+      },
+      "attributes": [
+        {
+          "name": "Date",
+          "dataType": "date"
+        },
+        {
+          "name": "Month",
+          "dataType": "string"
+        },
+        {
+          "name": "IsWorkingDay",
+          "dataType": "boolean"
+        },
+        {
+          "name": "WeekOfYear",
+          "dataType": "string"
+        },
+        {
+          "name": "Year",
+          "dataType": "string"
+        },
+        {
+          "name": "MonthNumb",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "Category",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "Category.csv"
+      },
+      "attributes": [
+        {
+          "name": "planCategory",
+          "dataType": "string"
+        },
+        {
+          "name": "category",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "Progress",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "Progress.csv"
+      },
+      "attributes": [
+        {
+          "name": "percentComplete",
+          "dataType": "string"
+        },
+        {
+          "name": "status",
+          "dataType": "string"
+        },
+        {
+          "name": "order",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "TaskCheckList",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "TaskCheckList.csv"
+      },
+      "attributes": [
+        {
+          "name": "checklistItemCount",
+          "dataType": "int64"
+        },
+        {
+          "name": "taskId",
+          "dataType": "string"
+        },
+        {
+          "name": "isChecked",
+          "dataType": "boolean"
+        },
+        {
+          "name": "title",
+          "dataType": "string"
+        },
+        {
+          "name": "index",
+          "dataType": "string"
+        }
+      ]
+    },
+    {
+      "$type": "LocalEntity",
+      "name": "Users",
+      "description": "",
+      "pbi:refreshPolicy": {
+        "$type": "FullRefreshPolicy",
+        "location": "Users.csv"
+      },
+      "attributes": [
+        {
+          "name": "userId",
+          "dataType": "string"
+        },
+        {
+          "name": "displayName",
+          "dataType": "string"
+        },
+        {
+          "name": "givenName",
+          "dataType": "string"
+        },
+        {
+          "name": "mail",
+          "dataType": "string"
+        },
+        {
+          "name": "surname",
+          "dataType": "string"
+        },
+        {
+          "name": "userPrincipalName",
+          "dataType": "string"
+        }
+      ]
+    }
+  ]
+}

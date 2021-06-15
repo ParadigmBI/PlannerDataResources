@@ -1,0 +1,9 @@
+WorkingDays = CALCULATE(COUNTROWS('Calendar'), DATESBETWEEN('Calendar'[Date],TaskDetail[startDate],TaskDetail[dueDate]),'Calendar'[IsWorkingDay] = TRUE)
+
+Tasks = COUNTROWS(TaskDetail)
+
+taskDuration = SUM(TaskDetail[WorkingDays])
+
+CheckBox = if(TaskChecklist[isChecked]<>"",If(TaskCheckList[isChecked]="TRUE","⊠","▢"),"")
+
+OrderedTitle = if([isChecked]<>"",[index] & ") " & [title],"")

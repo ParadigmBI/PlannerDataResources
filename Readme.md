@@ -6,6 +6,8 @@ Implement by:
 * Deploy Template
 * Authorise connectors for Planner and AzureAD
 
+Note: You must have permission to run PowerShell Scripts
+
 Manual deployment from PowerShell:
 >Connect-AzAccount
 
@@ -27,3 +29,13 @@ Create a resource group
 
 Then go into Azure web and authorise the connections by using 'Edit API Connection' on the connections
 
+Other Files
+-----------
+
+Create the API as in the  video  on https://youtu.be/wOetvx9_d04
+
+Load the DataFlow from file from PlannerDataFlow.json
+
+See the blog at https://blog.paradigmbi.com.au/post/2021/06/15/planner-api-and-power-bi for more details.
+
+When you connect PowerBI to the DataFlow will need the Columns and Measures in DataMeasuresandColumns.txt
