@@ -25,7 +25,8 @@ Create a resource group
 >New-AzResourceGroupDeployment `
   -Name LogicApptemplate `
   -ResourceGroupName myResourceGroup `
-  -TemplateFile $templateFile
+  -TemplateFile $templateFile `
+  -TenantId {_The tenant ID of the Azure Active Directory application_}
 
 Then go into Azure web and authorise the connections by using 'Edit API Connection' on the connections
 
